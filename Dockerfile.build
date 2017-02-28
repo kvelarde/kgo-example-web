@@ -1,0 +1,9 @@
+FROM golang:1.7.3
+
+RUN mkdir -p /go/src/user/app
+
+WORKDIR /go/src/user/app
+
+COPY main.go .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
