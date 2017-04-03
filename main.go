@@ -14,12 +14,12 @@ func main() {
 	message := os.Getenv("LISTEN_MSG")
 
 	if port == "" {
-		log.Printf("No Listen port specifed defulting to 45678")
+		log.Printf("No Listen port: Default  45678")
 		port = "45678"
 	}
 
 	if message == "" {
-		log.Printf("No message, defaulting to hello")
+		log.Printf("No message, default: hello")
 		message = "hello!"
 	}
 
@@ -29,7 +29,7 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		println("---->", port, r.URL.String())
-		res := bytes.NewBufferString("This is App " + message + "\n\n")
+		res := bytes.NewBufferString("App Version: " + message + "\n\n")
 		w.WriteHeader(200)
 		w.Write(res.Bytes())
 	})
