@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+  main:
+    image: localhost:5000/kgo-example-web
+    environment:
+      - LISTEN_PORT=7777
+      - LISTEN_MSG="hello from kurtis\n\n"
+    networks:
+      - proxy
+      - default
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+      labels:
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.servicePath=/demo
+        - com.df.port=7777
+
+
+networks:
+  default:
+    external: false
+  proxy:
+    external: true
