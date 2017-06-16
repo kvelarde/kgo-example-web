@@ -28,3 +28,10 @@ docker service create --name registry -p 5000:5000 --reserve-memory 100m registr
 
 # launch compose file
 sudo docker stack deploy -c kgo-demo-stack.yml kgo
+
+docker service create --name jenkins \ 
+	-p 50000:50000 \ 
+	-p 8080:8080  \
+        -e JENKINS_OPTS="hudson.DNSMultiCast.disabled=true" \
+	--reserve-memory 300m \
+        jenkins:2.7.4-alpine

@@ -8,3 +8,5 @@ docker service create --name kgo-example-web \
     --label com.df.servicePath=/hi \
     --label com.df.port=7777 \
     localhost:5000/kgo-example-web      
+
+docker service create --name jenkins -p 50000:50000 -p 8082:8080  --reserve-memory 100m jenkins
