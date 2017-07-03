@@ -20,7 +20,7 @@ func main() {
 
 	if message == "" {
 		log.Printf("No message, default: hello")
-		message = "hello kevin is cool dad is funny")
+		message = "hello ")
 	}
 
 	if _, err := strconv.Atoi(port); err != nil {
