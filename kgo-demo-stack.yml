@@ -3,12 +3,11 @@ version: '3'
 services:
 
   main:
-    image: localhost:5000/kgo-example-web
+    image: registry.torpedo.red:5000/kgo-example-web:0.1
     environment:
       - LISTEN_PORT=7777
       - LISTEN_MSG="hello from kurtis\n\n"
     networks:
-      - proxy
       - default
     deploy:
       replicas: 3
@@ -25,5 +24,3 @@ services:
 networks:
   default:
     external: false
-  proxy:
-    external: true
