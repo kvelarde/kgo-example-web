@@ -1,0 +1,48 @@
+---
+- job:
+    name: kgo_docker_deploy
+    project-type: pipeline
+    description: 'KGO: DEPLOY JOB'
+    disabled: false
+    display-name: 'Deployment: KGO DEPLOY Job'
+    parameters:
+      - string:
+          name: SWARM_HOST
+          default: '34.212.90.136'
+          description: 'Docker Swarm Host (REQUIRED).'
+      - string:
+          name: REGISTRY
+          default: 'registry.torpedo.red:5000'
+          description: 'Docker Registry (REQUIRED).'
+      - string:
+          name: STACK_FILE
+          default: 'kgo-demo-stack.yml'
+          description: 'Docker Stack File'
+    logrotate:
+      daysToKeep: 10
+      numToKeep: 50
+    dsl: |
+          import hudson.EnvVars
+          try {
+          node {
+            stage 'Checkout project code'
+              git branch: 'master', url: 'https://github.com/kvelarde/kgo-example-web.git'
+              sh 'ls'
+              sh 'pwd'
+            stage 'Connecting to host and deploying StackFile'
+              println "\u2600 Connecting to Swarm and deploying swarm file"
+              sh "scp ${STACK_FILE} ubuntu@${SWARM_HOST}:"
+            stage 'Deploy Stack File'
+              println 'Deploying...'
+              sh "ssh ubuntu@${SWARM_HOST} docker stack deploy -c ${STACK_FILE} kgo"
+            stage 'Functional Test (Make Sure its running)'
+              println 'functional testing'
+          } // end node
+          } // end try
+          catch (exc) {
+            String recipient = 'infra@lists.kurtisvelarde.com'
+            mail subject: "${env.JOB_NAME} (${env.BUILD_NUMBER}) failed",
+              body: "It appears that ${env.BUILD_URL} is failing",
+              to: recipient,
+              from: 'build@kurtisvelarde.com'
+          }

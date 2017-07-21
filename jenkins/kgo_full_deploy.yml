@@ -1,0 +1,58 @@
+---
+- job:
+    name: kgo_docker_full_deploy
+    project-type: pipeline
+    description: 'KGO: Full DEPLOY JOB'
+    disabled: false
+    display-name: 'Deployment: KGO FULL DEPLOY Job'
+    parameters:
+      - string:
+          name: TAG
+          description: 'Tag to deploy'
+          default: '0.1'
+      - string:
+          name: REGISTRY
+          description: 'Docker Registry (REGUIRED).'
+          default: 'registry.torpedo.red:5000'
+      - string:
+          name: SWARM_HOST
+          default: '34.212.90.136'
+          description: 'Docker Swarm Host (REQUIRED).'
+      - string:
+          name: STACK_FILE
+          default: 'kgo-demo-stack.yml'
+          description: 'Docker Stack File'
+    logrotate:
+      daysToKeep: 10
+      numToKeep: 50
+    dsl: |
+          try {
+          node {
+            stage 'Build Project'
+              println 'Building project'
+              def job1_params =
+              [
+                new StringParameterValue('TAG',"${TAG}"),
+                new StringParameterValue('REGISTRY',"${REGISTRY}"),
+              ]
+              build job: 'kgo_docker_build', parameters: job1_params
+
+            stage 'Deploy Project'
+              println 'Deploying project'
+              def job2_params =
+              [
+                new StringParameterValue('SWARM_HOST',"${SWARM_HOST}"), 
+                new StringParameterValue('REGISTRY',"${REGISTRY}"), 
+                new StringParameterValue('STACK_FILE',"${STACK_FILE}"), 
+              ]
+              build job: 'kgo_docker_deploy', parameters: job2_params
+
+          } // end node
+          } // end try
+          catch (exc) {
+            String recipient = 'infra@lists.kurtisvelarde.com'
+            mail subject: "${env.JOB_NAME} (${env.BUILD_NUMBER}) failed",
+              body: "It appears that ${env.BUILD_URL} is failing",
+              to: recipient,
+              from: 'build@kurtisvelarde.com'
+          }
