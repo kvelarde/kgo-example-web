@@ -2,7 +2,7 @@
 - job:
     name: kgo_docker_build
     project-type: pipeline
-    description: 'KGO: BUILD JOB"
+    description: 'KGO: BUILD JOB'
     disabled: false
     display-name: 'Deployment: KGO BUILD Job'
     parameters:
