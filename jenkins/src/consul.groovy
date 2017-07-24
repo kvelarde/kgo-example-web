@@ -5,6 +5,17 @@ consul_endpoint='http://34.212.90.136:8500'
 
 
 def getConsulValue(def key){
+    def url = new URL("${consul_endpoint}/v1/kv/${key}")
+    def http = url.openConnection()
+    http.setDoOutput(true)
+    http.setRequestMethod('GET')
+    http.setRequestProperty('User-Agent', 'groovy script')
+
+    def out = new OutputStreamWriter(http.outputStream)
+    res = out.read()
+    out.close()
+
+    println "$res"
     return
 }
 
