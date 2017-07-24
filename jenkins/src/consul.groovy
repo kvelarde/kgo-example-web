@@ -19,7 +19,7 @@ def putConsulValue(def key, def value){
 
     def out = new OutputStreamWriter(http.outputStream)
 
-    out.write(${value})
+    out.write("whatsup")
     out.close()
     http.inputStream
 
