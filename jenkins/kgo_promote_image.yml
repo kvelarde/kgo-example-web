@@ -1,0 +1,42 @@
+---
+- job:
+    name: kgo_promote_image
+    project-type: pipeline
+    description: 'KGO: Promote Docker Image JOB'
+    disabled: false
+    display-name: 'Deployment: KGO Promote Docker Image Job'
+    parameters:
+      - string:
+          name: FROM_TAG
+          default: '0.1'
+          description: 'Tag to deploy to registry'
+      - string:
+          name: FROM_REGISTRY
+          default: 'registry.torpedo.red:5000'
+          description: 'Docker Registry (REQUIRED).'
+      - string:
+          name: TO_TAG
+          default: 'latest'
+          description: 'Promoted Tag Name'
+      - string:
+          name: TO_REGISTRY
+          default: 'prod-registry.torpedo.red:5000'
+          description: 'Docker Registry (REQUIRED).'
+      
+    logrotate:
+      daysToKeep: 10
+      numToKeep: 50
+    dsl: |
+          import hudson.EnvVars
+          try {
+          node {
+            stage 'checkout code'
+          } // end node
+          } // end try
+          catch (exc) {
+            String recipient = 'infra@lists.kurtisvelarde.com'
+            mail subject: "${env.JOB_NAME} (${env.BUILD_NUMBER}) failed",
+              body: "It appears that ${env.BUILD_URL} is failing",
+              to: recipient,
+              from: 'build@kurtisvelarde.com'
+          }
