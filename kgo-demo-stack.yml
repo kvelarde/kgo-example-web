@@ -9,6 +9,7 @@ services:
       - LISTEN_MSG="hello from kurtis\n\n"
     networks:
       - default
+      - proxy
     deploy:
       replicas: 3
       update_config:
