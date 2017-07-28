@@ -3,7 +3,7 @@ version: '3'
 services:
 
   main:
-    image: registry.torpedo.red:5000/kgo-example-web:0.5
+    image: registry.torpedo.red:5000/kgo-example-web:0.8
     environment:
       - LISTEN_PORT=7777
       - LISTEN_MSG="hello from kurtis\n\n"
